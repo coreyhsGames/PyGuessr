@@ -1,4 +1,4 @@
-import discord, json, random
+import discord, json, random, math
 from discord.ext import commands
 from pymongo import MongoClient
 
@@ -6,11 +6,15 @@ country_list = open("./country-list.txt").read().splitlines()
 
 country_data = {
     # Country Name, Hemisphere, Continent, Population, Avg. Temp
-    "Afghanistan": "Northern, Asia, 38.9m, 12.60",
-    "Albania": "Northern, Europe, 2.8m, 11.40",
-    "Algeria": "Northern, Africa, 43.8m, 22.50",
-    "Andorra": "Northern, Europe, 55,000, 7.60",
-    "Angola": "Southern, Africa, 32.8m, 21.55"
+    "Afghanistan": "Northern, Asia, 38900000, 12.60",
+    "Albania": "Northern, Europe, 2800000, 11.40",
+    "Algeria": "Northern, Africa, 43000000, 22.50",
+    "Andorra": "Northern, Europe, 55000, 7.60",
+    "Angola": "Southern, Africa, 32000000, 21.55",
+    "Antigua and Barbuda": "Northern, North America, 98000, 25.85",
+    "Argentina": "Southern, South America, 45100000, 14.80",
+    "Armenia": "Northern, Asia, 2900000, 7.15",
+    "Australia": "Southern, Oceania, 25500000, 21.65"
 }
 
 class countryle(commands.Cog):
@@ -63,39 +67,27 @@ class countryle(commands.Cog):
     
 def generate_puzzle_embed(puzzle_id: int) -> discord.Embed:
     embed = discord.Embed(title="Countryle")
-    embed.description = f"🌐 Hemisphere | <:earth_oceania:1080012117035450408> Continent | 👩🏼‍🤝‍🧑🏿 Population | 🌡 Avg. Temp"
+    embed.description = f"**🌐 Hemisphere | <:earth_oceania:1080012117035450408> Continent | 👩🏼‍🤝‍🧑🏿 Population | 🌡 Avg. Temp**"
 
-    '''
-    global guess1, guess2, guess3, guess4, guess5, guess6
-    guess1 = embed.add_field(name="Guess 1:", value="", inline=True)
-    guess2 = embed.add_field(name="Guess 2:", value="", inline=True)
-    guess3 = embed.add_field(name="Guess 3:", value="", inline=True)
-    guess4 = embed.add_field(name="Guess 4:", value="", inline=True)
-    guess5 = embed.add_field(name="Guess 5:", value="", inline=True)
-    guess6 = embed.add_field(name="Guess 6:", value="", inline=True)
-    '''
-
-    embed.set_footer(text=f"Game ID: {puzzle_id}\nTo play, use the command **pycountryle**!\nTo guess, reply to this message with a valid country.")
+    embed.set_footer(text=f"Game ID: {puzzle_id} | To play, use the command pycountryle!\nTo guess, reply to this message with a valid country.")
     return embed
 
 def is_valid_country(word: str) -> bool:
-    return word.lower() in country_list
+    if word in country_list:
+        return True
+    else:
+        return False
 
 def random_puzzle_id() -> int:
     return random.randint(0, len(country_list) - 1)
 
-'''
-def generate_blanks(start, end):
-    str = ""
-    for i in range(start, end):
-        i += 1
-        str = f"{str}\n**ATTEMPT {i}:**"
-    return str
-'''
-
 def generate_guessed_country(guess, answer, puzzle_id):
-    correct_country_values = country_data[puzzle_id]
+    country_data_keys = list(country_data.keys())
+    correct_country = country_data_keys[puzzle_id]
+    correct_country_values = country_data[correct_country]
     correct_country_values_split = correct_country_values.split(", ")
+
+    print(correct_country)
 
     global correct_hemisphere, correct_continent, correct_population, correct_avg_temp
 
@@ -103,6 +95,9 @@ def generate_guessed_country(guess, answer, puzzle_id):
     correct_continent = correct_country_values_split[1]
     correct_population = correct_country_values_split[2]
     correct_avg_temp = correct_country_values_split[3]
+
+    correct_population = format(int(correct_population),",")
+    correct_avg_temp = float(correct_avg_temp)
 
     guessed_country_values = country_data[f"{guess}"]
     guessed_country_values_split = guessed_country_values.split(", ")
@@ -113,6 +108,9 @@ def generate_guessed_country(guess, answer, puzzle_id):
     guessed_continent = guessed_country_values_split[1]
     guessed_population = guessed_country_values_split[2]
     guessed_avg_temp = guessed_country_values_split[3]
+
+    guessed_population = format(int(guessed_population),",")
+    guessed_avg_temp = float(guessed_avg_temp)
 
     global hemisphere_str, continent_str, population_str, avg_temp_str
 
@@ -136,18 +134,18 @@ def generate_guessed_country(guess, answer, puzzle_id):
     if guessed_avg_temp == correct_avg_temp:
         avg_temp_str = f"{guessed_avg_temp} ✅"
     elif guessed_avg_temp < correct_avg_temp:
-        avg_temp_str = f"{guessed_avg_temp} ⬆"
+        avg_temp_str = f"{guessed_avg_temp}°C ⬆"
     elif guessed_avg_temp > correct_avg_temp:
-        avg_temp_str = f"{guessed_avg_temp} ⬇"
+        avg_temp_str = f"{guessed_avg_temp}°C ⬇"
     
     return f"{hemisphere_str} | {continent_str} | {population_str} | {avg_temp_str}"
 
 
 def update_embed(embed: discord.Embed, guess: str) -> discord.Embed:
-    puzzle_id = int(embed.footer.text.split()[1])
+    puzzle_id = int(embed.footer.text.split()[2])
     answer = country_list[puzzle_id]
     guessed_result = generate_guessed_country(guess, answer, puzzle_id)
-    embed.fields[0]["value"] = f"{guess}\n{guessed_result}"
+    embed.add_field(name=f"{guess}:", value=f"{guessed_result}", inline=False)
     return embed
 
 async def setup(client):
