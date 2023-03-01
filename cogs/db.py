@@ -27,7 +27,6 @@ class database(commands.Cog):
             try:
                 temp = ctx.guild.get_member(x["id"])
                 temp_wins = x["wins"]
-                temp_kills = x["kills"]
                 temp_games_played = x["games_played"]
 
                 field_stats = f'👑 **Wins:** {temp_wins} | 🗓️ **Games Played:** {temp_games_played}"'

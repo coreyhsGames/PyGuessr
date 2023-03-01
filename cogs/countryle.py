@@ -31,6 +31,15 @@ class countryle(commands.Cog):
 
     @commands.command(aliases=['countryle'])
     async def play_countryle(self, ctx):
+        user_stats = db_countryle.find_one({"id": ctx.author.id})
+        if not ctx.author.bot:
+            if not user_stats:
+                new_user = {"id": ctx.author.id, "wins": 0, "times_played": 0}
+                db_countryle.insert_one(new_user)
+            else:
+                times_played = user_stats["times_played"] + 1
+                user_stats.update_one({"id": ctx.author.id}, {"$set": {"times_played": times_played}})
+
         puzzle_id = random_puzzle_id()
         embed = generate_puzzle_embed(puzzle_id)
         await ctx.send(embed=embed)
@@ -38,7 +47,7 @@ class countryle(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         ref = message.reference
-        if not ref or not isinstance(ref.resolved, discord.Message):
+        if not ref or not isinstance(ref.resolved, discord.Message) or is_correct:
             return
         
         parent = ref.resolved
@@ -66,14 +75,20 @@ class countryle(commands.Cog):
 
     
 def generate_puzzle_embed(puzzle_id: int) -> discord.Embed:
-    embed = discord.Embed(title="Countryle")
-    embed.description = f"**🌐 Hemisphere | <:earth_oceania:1080012117035450408> Continent | 👩🏼‍🤝‍🧑🏿 Population | 🌡 Avg. Temp**"
+    embed = discord.Embed(title="Countryle: IN-PROGRESS")
+    embed.description = f"**🌐 Hemisphere | <:earth_oceania:1080012117035450408> Continent | 👥 Population | 🌡 Avg. Temp**"
 
     embed.set_footer(text=f"Game ID: {puzzle_id} | To play, use the command pycountryle!\nTo guess, reply to this message with a valid country.")
     return embed
 
 def is_valid_country(word: str) -> bool:
     if word in country_list:
+        return True
+    else:
+        return False
+    
+def is_guessed_country_correct(guess, answer) -> bool:
+    if guess == answer:
         return True
     else:
         return False
@@ -86,8 +101,6 @@ def generate_guessed_country(guess, answer, puzzle_id):
     correct_country = country_data_keys[puzzle_id]
     correct_country_values = country_data[correct_country]
     correct_country_values_split = correct_country_values.split(", ")
-
-    print(correct_country)
 
     global correct_hemisphere, correct_continent, correct_population, correct_avg_temp
 
@@ -132,7 +145,7 @@ def generate_guessed_country(guess, answer, puzzle_id):
         population_str = f"{guessed_population} ⬇"
     
     if guessed_avg_temp == correct_avg_temp:
-        avg_temp_str = f"{guessed_avg_temp} ✅"
+        avg_temp_str = f"{guessed_avg_temp}°C ✅"
     elif guessed_avg_temp < correct_avg_temp:
         avg_temp_str = f"{guessed_avg_temp}°C ⬆"
     elif guessed_avg_temp > correct_avg_temp:
@@ -145,7 +158,21 @@ def update_embed(embed: discord.Embed, guess: str) -> discord.Embed:
     puzzle_id = int(embed.footer.text.split()[2])
     answer = country_list[puzzle_id]
     guessed_result = generate_guessed_country(guess, answer, puzzle_id)
-    embed.add_field(name=f"{guess}:", value=f"{guessed_result}", inline=False)
+
+    global is_correct
+    is_correct = is_guessed_country_correct(guess, answer)
+
+    if is_correct == True:
+        num_of_guesses = len(embed.fields)
+
+        embed.add_field(name=f"{guess}:", value=f"{guessed_result}\n**Correct! ✅**\nGuesses: {num_of_guesses}", inline=False)
+        embed.title = f"{embed.title}: COMPLETE"
+
+        user_stats = db_countryle.find_one({"id": embed.author.id})
+        wins = user_stats["wins"] + 1
+        user_stats.update_one({"id": embed.author.id}, {"$set": {"wins": wins}})
+    else:
+        embed.add_field(name=f"{guess}:", value=f"{guessed_result}", inline=False)
     return embed
 
 async def setup(client):
