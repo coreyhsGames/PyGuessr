@@ -29,6 +29,9 @@ class countryle(commands.Cog):
     global db_countryle
     db_countryle = cluster['pyguesser']['countryle']
 
+    global is_correct
+    is_correct = False
+
     @commands.command(aliases=['countryle'])
     async def play_countryle(self, ctx):
         user_stats = db_countryle.find_one({"id": ctx.author.id})
@@ -158,8 +161,7 @@ def update_embed(embed: discord.Embed, guess: str) -> discord.Embed:
     puzzle_id = int(embed.footer.text.split()[2])
     answer = country_list[puzzle_id]
     guessed_result = generate_guessed_country(guess, answer, puzzle_id)
-
-    global is_correct
+    
     is_correct = is_guessed_country_correct(guess, answer)
 
     if is_correct == True:
