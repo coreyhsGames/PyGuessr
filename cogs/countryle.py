@@ -32,15 +32,13 @@ class countryle(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_msg(self, message: discord.Message):
-        print(self.client)
-        print(self.client.user.id)
+    async def on_message(self, message: discord.Message):
         ref = message.reference
         if not ref or not isinstance(ref.resolved, discord.Message):
             return
+        
         parent = ref.resolved
 
-        print(self.client)
         if parent.author.id != self.client.user.id:
             return
         
@@ -50,11 +48,10 @@ class countryle(commands.Cog):
         embed = parent.embeds[0]
         
         if not is_valid_country(message.content):
-            await message.reply("Sorry! This country doesn't exist. :(", delete_after=5)
+            await message.reply("Sorry! This country doesn't exist. 😔", delete_after=5)
             await message.delete(delay=5)
             return
         
-        print("yes")
         embed = update_embed(embed, message .content)
         await parent.edit(embed=embed)
 
@@ -68,6 +65,7 @@ def generate_puzzle_embed(puzzle_id: int) -> discord.Embed:
     embed = discord.Embed(title="Countryle")
     embed.description = f"🌐 Hemisphere | <:earth_oceania:1080012117035450408> Continent | 👩🏼‍🤝‍🧑🏿 Population | 🌡 Avg. Temp"
 
+    '''
     global guess1, guess2, guess3, guess4, guess5, guess6
     guess1 = embed.add_field(name="Guess 1:", value="", inline=True)
     guess2 = embed.add_field(name="Guess 2:", value="", inline=True)
@@ -75,7 +73,7 @@ def generate_puzzle_embed(puzzle_id: int) -> discord.Embed:
     guess4 = embed.add_field(name="Guess 4:", value="", inline=True)
     guess5 = embed.add_field(name="Guess 5:", value="", inline=True)
     guess6 = embed.add_field(name="Guess 6:", value="", inline=True)
-
+    '''
 
     embed.set_footer(text=f"Game ID: {puzzle_id}\nTo play, use the command **pycountryle**!\nTo guess, reply to this message with a valid country.")
     return embed
