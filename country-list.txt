@@ -9,7 +9,6 @@ Armenia
 Australia
 Austria
 Azerbaijan
-Bahamas
 Bahrain
 Bangladesh
 Barbados
@@ -170,6 +169,7 @@ Syria
 Tajikistan
 Tanzania
 Thailand
+The Bahamas
 The Gambia
 Togo
 Tonga

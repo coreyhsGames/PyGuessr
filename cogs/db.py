@@ -22,14 +22,14 @@ class database(commands.Cog):
 
         rankings = db_countryle.find().sort("wins", -1)
         i = 1
-        embed = discord.Embed(title="PyGuessr Leaderboard", description=f"Displays the best players (top {num_of_players}) in all of Discord, by most wins.", color=0xf54242)
+        embed = discord.Embed(title="PyGuessr Leaderboard", description=f"Displays the best players (top {num_of_players}) in all of Discord in PyGuessr's Countryle, sorted by most wins.", colour=0xBA55D3)
         for x in rankings:
             try:
                 temp = ctx.guild.get_member(x["id"])
                 temp_wins = x["wins"]
                 temp_games_played = x["games_played"]
 
-                field_stats = f'👑 **Wins:** {temp_wins} | 🗓️ **Games Played:** {temp_games_played}"'
+                field_stats = f'👑 **Wins:** {temp_wins} | 🗓️ **Games Played:** {temp_games_played}'
                 if i == 1:
                     i = "🥇"
                     embed.add_field(name=f"{i}: {temp.name}", value=field_stats, inline=False)
