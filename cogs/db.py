@@ -22,7 +22,7 @@ class database(commands.Cog):
 
         rankings = db_countryle.find().sort("wins", -1)
         i = 1
-        embed = discord.Embed(title="PyGuessr Leaderboard", description=f"Displays the best players (top {num_of_players}) in all of Discord in PyGuessr's Countryle, sorted by most wins.", colour=0xBA55D3)
+        embed = discord.Embed(title = "PyGuessr Leaderboard", description = f"Displays the best players (top {num_of_players}) in all of Discord in PyGuessr's Countryle, sorted by most wins.", colour = 0xBA55D3)
         for x in rankings:
             try:
                 temp = ctx.guild.get_member(x["id"])
@@ -32,23 +32,23 @@ class database(commands.Cog):
                 field_stats = f'👑 **Wins:** {temp_wins} | 🗓️ **Games Played:** {temp_games_played}'
                 if i == 1:
                     i = "🥇"
-                    embed.add_field(name=f"{i}: {temp.name}", value=field_stats, inline=False)
+                    embed.add_field(name = f"{i}: {temp.name}", value = field_stats, inline = False)
                     i = 2
                 elif i == 2:
                     i = "🥈"
-                    embed.add_field(name=f"{i}: {temp.name}", value=field_stats, inline=False)
+                    embed.add_field(name = f"{i}: {temp.name}", value = field_stats, inline = False)
                     i = 3
                 elif i == 3: 
                     i = "🥉"
-                    embed.add_field(name=f"{i}: {temp.name}", value=field_stats, inline=False)
+                    embed.add_field(name = f"{i}: {temp.name}", value = field_stats, inline = False)
                     i = 4
                 else:
                     if i == 4:
                         i = 4
-                        embed.add_field(name=f"{i}: {temp.name}", value=field_stats, inline=False)
+                        embed.add_field(name = f"{i}: {temp.name}", value = field_stats, inline = False)
                         i += 1
                     else:
-                        embed.add_field(name=f"{i}: {temp.name}", value=field_stats, inline=False)
+                        embed.add_field(name = f"{i}: {temp.name}", value = field_stats, inline = False)
                         i += 1
             except:
                 pass

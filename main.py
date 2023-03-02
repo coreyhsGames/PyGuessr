@@ -22,11 +22,11 @@ async def on_ready():
     global uptime_start_time
     uptime_start_time = time.time()
 
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="🔧 Getting Reworked!"))
+    await client.change_presence(activity=discord.Activity(type = discord.ActivityType.playing, name = "🔧 Getting Reworked!"))
 
 # Grabs time
 def get_bot_uptime():
-        uptime = str(datetime.timedelta(seconds=int(round(time.time()-uptime_start_time))))
+        uptime = str(datetime.timedelta(seconds=int(round(time.time() - uptime_start_time))))
         return uptime
 
 @client.command()
@@ -47,22 +47,22 @@ async def stats(ctx):
         ping = round((client.latency), 2)
     
     # Embed Setup
-    em = discord.Embed(title=f"{client.user.name}'s Statistics", description="Gets <@937842334350053386>'s statistics.", colour=0xBA55D3)
+    em = discord.Embed(title = f"{client.user.name}'s Statistics", description = "Gets <@937842334350053386>'s statistics.", colour = 0xBA55D3)
     em.add_field(name="Bot Version",
-                        value=f"🐍 Python: **{python_version}**\n 💻 Discord.PY: **{discordpy_version}**", inline=False)
-    em.add_field(name="Uptime & Hardware",
-                        value=f"🕒 Bot Uptime: **{get_bot_uptime()}**\n🧠 Memory: **{round(mem_usage, 1)}MB ({mem_of_total * 100:.0f}%)**\n📶 Ping: **{ping} seconds**", inline=False)
-    msg = await ctx.reply(embed=em)
+                        value = f"🐍 Python: **{python_version}**\n 💻 Discord.PY: **{discordpy_version}**", inline = False)
+    em.add_field(name = "Uptime & Hardware",
+                        value = f"🕒 Bot Uptime: **{get_bot_uptime()}**\n🧠 Memory: **{round(mem_usage, 1)}MB ({mem_of_total * 100:.0f}%)**\n📶 Ping: **{ping} seconds**", inline = False)
+    msg = await ctx.reply(embed = em)
 
     # Response Time
     ping_end_time = time.time()
     response_time = round((ping_end_time - ping_start_time), 2)
 
-    updated_em = discord.Embed(title=f"{client.user.name}'s Statistics", description="Gets <@937842334350053386>'s statistics.", colour=0xBA55D3)
-    updated_em.add_field(name="Bot Version",
-                        value=f"🐍 Python: **{python_version}**\n 💻 Discord.PY: **{discordpy_version}**", inline=False)
-    updated_em.add_field(name="Uptime & Hardware",
-                        value=f"🕒 Bot Uptime: **{get_bot_uptime()}**\n🧠 Memory: **{round(mem_usage, 1)}MB ({mem_of_total * 100:.0f}%)**\n📶 Ping: **{ping} seconds**\n⌚ Response Time: **{response_time} seconds**", inline=False)
-    await msg.edit(embed=updated_em)
+    updated_em = discord.Embed(title = f"{client.user.name}'s Statistics", description = "Gets <@937842334350053386>'s statistics.", colour = 0xBA55D3)
+    updated_em.add_field(name = "Bot Version",
+                        value = f"🐍 Python: **{python_version}**\n 💻 Discord.PY: **{discordpy_version}**", inline = False)
+    updated_em.add_field(name = "Uptime & Hardware",
+                        value = f"🕒 Bot Uptime: **{get_bot_uptime()}**\n🧠 Memory: **{round(mem_usage, 1)}MB ({mem_of_total * 100:.0f}%)**\n📶 Ping: **{ping} seconds**\n⌚ Response Time: **{response_time} seconds**", inline = False)
+    await msg.edit(embed = updated_em)
 
 client.run(config['token'])

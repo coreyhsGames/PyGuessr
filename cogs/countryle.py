@@ -74,12 +74,12 @@ class countryle(commands.Cog):
         embed = parent.embeds[0]
         
         if not is_valid_country(message.content):
-            await message.reply("Sorry! This country doesn't exist. 😔", delete_after=5)
-            await message.delete(delay=5)
+            await message.reply("Sorry! This country doesn't exist. 😔", delete_after = 5)
+            await message.delete(delay = 5)
             return
         
         embed = update_embed(embed, message.content, message.author)
-        await parent.edit(embed=embed)
+        await parent.edit(embed = embed)
 
         try:
             await message.delete()
@@ -88,10 +88,10 @@ class countryle(commands.Cog):
 
     
 def generate_puzzle_embed(puzzle_id: int) -> discord.Embed:
-    embed = discord.Embed(title="Countryle: IN-PROGRESS", colour=0xBA55D3)
+    embed = discord.Embed(title = "Countryle: IN-PROGRESS", colour = 0xBA55D3)
     embed.description = f"**🌐 Hemisphere | <:earth_oceania:1080012117035450408> Continent | 👥 Population | 🌡 Avg. Temp**"
 
-    embed.set_footer(text=f"Game ID: {puzzle_id} | To play, use the command pycountryle!\nTo guess, reply to this message with a valid country.")
+    embed.set_footer(text = f"Game ID: {puzzle_id} | To play, use the command pycountryle!\nTo guess, reply to this message with a valid country.")
     return embed
 
 def is_valid_country(word: str) -> bool:
@@ -181,14 +181,14 @@ def update_embed(embed: discord.Embed, guess: str, user: discord.Member) -> disc
     if is_correct == True:
         num_of_guesses = len(embed.fields) + 1
 
-        embed.add_field(name=f"{guess}:", value=f"{guessed_result}\n\n**Correct! ✅**\n\nStats:\nGuesses: {num_of_guesses}", inline=False)
+        embed.add_field(name = f"{guess}:", value = f"{guessed_result}\n\n**Correct! ✅**\n\nStats:\nGuesses: {num_of_guesses}", inline=False)
         embed.title = f"Countryle: COMPLETE"
 
         user_stats = db_countryle.find_one({'id': user.id})
         wins = user_stats['wins'] + 1
         db_countryle.update_one({"id": user.id}, {"$set":{"wins": wins}})
     else:
-        embed.add_field(name=f"{guess}:", value=f"{guessed_result}", inline=False)
+        embed.add_field(name = f"{guess}:", value = f"{guessed_result}", inline=False)
     return embed
 
 async def setup(client):
