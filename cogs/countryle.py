@@ -107,16 +107,28 @@ def is_guessed_country_correct(guess, answer) -> bool:
         return False
 
 def random_puzzle_id() -> int:
-    return random.randint(0, len(country_list) - 1)
+    temp = random.randint(0, len(country_list) - 1)
 
-def is_higher_or_lower(guess, answer) -> str:
+    global puzzle_id_rand_int
+    puzzle_id_rand_int = random.randint(1, 10)
+
+    global puzzle_id_operation
+    puzzle_id_operation = random.randint(1, 2)
+    if puzzle_id_operation == 1:
+        temp *= puzzle_id_rand_int
+        return temp
+    elif puzzle_id_operation == 2:
+        temp += puzzle_id_rand_int
+        return temp 
+
+def is_higher_or_lower(guess, answer, is_bool: bool) -> str:
     if guess == answer:
         return f"{guess} ✅"
-    elif guess > answer:
+    elif guess > answer and is_bool == False:
         return f"{guess} ⬇"
-    elif guess < answer:
+    elif guess < answer and is_bool == False:
         return f"{guess} ⬆"
-    else:
+    elif is_bool == True:
         return f"{guess} ❌"
 
 def generate_guessed_country(guess, answer, puzzle_id):
@@ -153,10 +165,10 @@ def generate_guessed_country(guess, answer, puzzle_id):
     guessed_population_str = format(guessed_population, ",")
     guessed_avg_temp = float(guessed_avg_temp)
 
-    hemisphere_str = is_higher_or_lower(guessed_hemisphere, correct_hemisphere)
-    continent_str = is_higher_or_lower(guessed_continent, correct_continent)
+    hemisphere_str = is_higher_or_lower(guessed_hemisphere, correct_hemisphere, True)
+    continent_str = is_higher_or_lower(guessed_continent, correct_continent, True)
     # population_str = is_higher_or_lower(guessed_population, correct_population)
-    avg_temp_str = is_higher_or_lower(guessed_avg_temp, correct_avg_temp)
+    avg_temp_str = is_higher_or_lower(guessed_avg_temp, correct_avg_temp, False)
 
     # Displays population with commas
     if guessed_population == correct_population:
@@ -173,6 +185,16 @@ def generate_guessed_country(guess, answer, puzzle_id):
 
 def update_embed(embed: discord.Embed, guess: str, user: discord.Member) -> discord.Embed:
     puzzle_id = int(embed.footer.text.split()[2])
+
+    if puzzle_id_operation == 1:
+        puzzle_id /= puzzle_id_rand_int
+        print(puzzle_id)
+        puzzle_id = int(puzzle_id)
+    elif puzzle_id_operation == 2:
+        puzzle_id -= puzzle_id_rand_int
+        print(puzzle_id)
+        puzzle_id = int(puzzle_id)
+
     answer = country_list[puzzle_id]
     guessed_result = generate_guessed_country(guess, answer, puzzle_id)
     
