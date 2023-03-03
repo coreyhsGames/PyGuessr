@@ -11,7 +11,7 @@ PyGuessr is currently in development and isn't finished.
 
 ## To-Do
 - [x] Database Functionality
-- [ ] Countryle
+- [ ] Countryle (based off https://countryle.com)
 - [ ] Country Shape Guessing
 - [ ] Flag Guessing
 - [ ] Currency
