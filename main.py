@@ -1,5 +1,5 @@
 import discord, platform, time, datetime, json, os
-from discord.ext import commands
+from discord.ext import commands, tasks
 from psutil import Process, virtual_memory
 
 with open("config.json") as f:
@@ -22,6 +22,11 @@ async def on_ready():
     global uptime_start_time
     uptime_start_time = time.time()
 
+    if not update_status.is_running():
+        update_status.start()
+
+@tasks.loop(seconds = 120)
+async def update_status():
     await client.change_presence(activity=discord.Activity(type = discord.ActivityType.playing, name = f"pyhelp | {len(client.guilds)} servers"))
 
 # Grabs time
