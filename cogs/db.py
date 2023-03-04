@@ -14,15 +14,15 @@ class database(commands.Cog):
     global db_countryle
     db_countryle = cluster['pyguesser']['countryle']
 
-    @commands.command(aliases=['top', 'lb'])
-    async def leaderboard(self, ctx, num_of_players: int = 5):
-        if num_of_players > 20:
-            await ctx.reply("In order to make the message not too long, you can only see the top 20 people in the server. ❌")
-            return
+    @commands.group(invoke_without_command = True)
+    async def lb(self, ctx):
+        await ctx.reply("**In order to see the leaderboards, please specify the game. Currently there is only 1 avaliable game. The list is below:\n• Countryle: `pylb countryle`**")
 
+    @lb.command(name = "countryle")
+    async def lb_countryle(self, ctx):
         rankings = db_countryle.find().sort("wins", -1)
         i = 1
-        embed = discord.Embed(title = "PyGuessr Leaderboard", description = f"Displays the best players (top {num_of_players}) in all of Discord in PyGuessr's Countryle, sorted by most wins.", colour = 0xBA55D3)
+        embed = discord.Embed(title = "PyGuessr Leaderboard", description = f"Displays the top 10 people in all of Discord in PyGuessr's Countryle, sorted by most wins.", colour = 0xBA55D3)
         for x in rankings:
             try:
                 temp = ctx.guild.get_member(x["id"])
@@ -52,7 +52,7 @@ class database(commands.Cog):
                         i += 1
             except:
                 pass
-            if i == num_of_players + 1:
+            if i == 10 + 1:
                 break
         await ctx.reply(embed=embed)
 

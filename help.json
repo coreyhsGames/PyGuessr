@@ -1,0 +1,12 @@
+{
+    "Games": {
+        "countryle": "A country guessing game, based off https://countryle.com."
+    },
+    "Stats": {
+        "lb": "Used to display leaderboards for Pygusser's games."
+    },
+    "Misc": {
+        "stats": "Shows Pygusser's current bot stats.",
+        "help": "Shows this command."
+    }
+}

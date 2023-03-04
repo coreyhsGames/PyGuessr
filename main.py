@@ -22,12 +22,52 @@ async def on_ready():
     global uptime_start_time
     uptime_start_time = time.time()
 
-    await client.change_presence(activity=discord.Activity(type = discord.ActivityType.playing, name = "🔧 Getting Reworked!"))
+    await client.change_presence(activity=discord.Activity(type = discord.ActivityType.playing, name = f"pyhelp | {len(client.guilds)} servers"))
 
 # Grabs time
 def get_bot_uptime():
         uptime = str(datetime.timedelta(seconds=int(round(time.time() - uptime_start_time))))
         return uptime
+
+help_list = json.load(open("help.json"))
+
+def create_help_embed(page_num = 0, inline = False):
+    page_num = page_num % len(list(help_list))
+    page_title = list(help_list)[page_num]
+    embed = discord.Embed(title = f"Commands: {page_title}", colour = 0xBA55D3)
+    
+    for key, val in help_list[page_title].items():
+        embed.add_field(name = client.command_prefix + key, value = val, inline = False)
+        embed.set_footer(text = f"Page: {page_num + 1} of {len(list(help_list))}")
+    return embed
+
+@client.command()
+async def help(ctx):
+    current_page = 0
+
+    async def next_callback(interaction):
+        nonlocal current_page, sent_message
+        current_page += 1
+        await sent_message.edit(embed = create_help_embed(page_num = current_page), view = my_view)
+        await interaction.response.defer()
+
+    async def back_callback(interaction):
+        nonlocal current_page, sent_message
+        current_page -= 1
+        await sent_message.edit(embed = create_help_embed(page_num = current_page), view = my_view)
+        await interaction.response.defer()
+
+    next_button = discord.ui.Button(label = ">", style = discord.ButtonStyle.blurple)
+    next_button.callback = next_callback
+
+    back_button = discord.ui.Button(label = "<", style = discord.ButtonStyle.blurple)
+    back_button.callback = back_callback
+
+    my_view = discord.ui.View(timeout = 180)
+    my_view.add_item(back_button)
+    my_view.add_item(next_button)
+
+    sent_message = await ctx.reply(embed = create_help_embed(current_page), view = my_view)
 
 @client.command()
 async def stats(ctx):

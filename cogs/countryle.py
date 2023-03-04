@@ -1,4 +1,4 @@
-import discord, json, random, math
+import discord, json, random, time
 from discord.ext import commands
 from pymongo import MongoClient
 
@@ -18,12 +18,13 @@ country_data = {
     "Austria": "Northern, Europe, 9000000, 6.35",
     "Azerbaijan": "Northern, Asia, 10100000, 11.95",
     "Bahrain": "Northern, Asia, 1700000, 26.80",
-    "Bangladesh": "Northern, Asia, 16000000, 25.00",
+    "Bangladesh": "Northern, Asia, 165000000, 25.00",
     "Barbados": "Northern, North America, 280000, 26.00",
     "Belarus": "Northern, Europe, 9500000, 6.15",
     "Belgium": "Northern, Europe, 11000000, 9.55",
     "Belize": "Northern, North America, 400000, 25.35",
-    "Benin": "Northern, Africa, 12000000, 27.55"
+    "Benin": "Northern, Africa, 12000000, 27.55",
+    "Bhutan": "Northern, Asia, 770000, 7.40"
 }
 
 with open("./config.json") as f:
@@ -47,6 +48,10 @@ class countryle(commands.Cog):
                 insert = {"id": ctx.author.id, "wins": 0, "games_played": 0}
                 db_countryle.insert_one(insert)
 
+                time.sleep(3)
+
+                user_stats = db_countryle.find_one({"id": ctx.author.id})
+
                 games_played = user_stats['games_played'] + 1
                 db_countryle.update_one({"id": ctx.author.id}, {"$set":{"games_played": games_played}})
             else:
@@ -55,7 +60,7 @@ class countryle(commands.Cog):
 
         puzzle_id = random_puzzle_id()
         embed = generate_puzzle_embed(puzzle_id)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed = embed)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
@@ -119,24 +124,13 @@ def random_puzzle_id() -> int:
         return temp
     elif puzzle_id_operation == 2:
         temp += puzzle_id_rand_int
-        return temp 
-
-def is_higher_or_lower(guess, answer, is_bool: bool) -> str:
-    if guess == answer:
-        return f"{guess} ✅"
-    elif guess > answer and is_bool == False:
-        return f"{guess} ⬇"
-    elif guess < answer and is_bool == False:
-        return f"{guess} ⬆"
-    elif is_bool == True:
-        return f"{guess} ❌"
+        return temp
 
 def generate_guessed_country(guess, answer, puzzle_id):
     country_data_keys = list(country_data.keys())
     correct_country = country_data_keys[puzzle_id]
     correct_country_values = country_data[correct_country]
     correct_country_values_split = correct_country_values.split(", ")
-    print(correct_country_values_split)
 
     global correct_hemisphere, correct_continent, correct_population, correct_avg_temp
 
@@ -150,7 +144,6 @@ def generate_guessed_country(guess, answer, puzzle_id):
 
     guessed_country_values = country_data[f"{guess}"]
     guessed_country_values_split = guessed_country_values.split(", ")
-    print(guessed_country_values_split)
 
     global guessed_hemisphere, guessed_continent, guessed_population, guessed_avg_temp
 
@@ -165,10 +158,15 @@ def generate_guessed_country(guess, answer, puzzle_id):
     guessed_population_str = format(guessed_population, ",")
     guessed_avg_temp = float(guessed_avg_temp)
 
-    hemisphere_str = is_higher_or_lower(guessed_hemisphere, correct_hemisphere, True)
-    continent_str = is_higher_or_lower(guessed_continent, correct_continent, True)
-    # population_str = is_higher_or_lower(guessed_population, correct_population)
-    avg_temp_str = is_higher_or_lower(guessed_avg_temp, correct_avg_temp, False)
+    if guessed_hemisphere == correct_hemisphere:
+        hemisphere_str = f"{guessed_hemisphere} ✅"
+    else:
+        continent_str = f"{guessed_continent} ❌"
+
+    if guessed_continent == correct_continent:
+        continent_str = f"{guessed_continent} ✅"
+    else:
+        continent_str = f"{guessed_continent} ❌"
 
     # Displays population with commas
     if guessed_population == correct_population:
@@ -177,8 +175,13 @@ def generate_guessed_country(guess, answer, puzzle_id):
         population_str = f"{guessed_population_str} ⬇"
     elif guessed_population < correct_population:
         population_str = f"{guessed_population_str} ⬆"
-    else:
-        population_str = f"{guessed_population_str} ❌"
+
+    if guessed_avg_temp == correct_avg_temp:
+        avg_temp_str = f"{guessed_avg_temp}°C ✅"
+    elif guessed_avg_temp > correct_avg_temp:
+        avg_temp_str = f"{guessed_avg_temp}°C ⬇"
+    elif guessed_avg_temp < correct_avg_temp:
+        avg_temp_str = f"{guessed_avg_temp}°C ⬆"
     
     return f"{hemisphere_str} | {continent_str} | {population_str} | {avg_temp_str}"
 
@@ -188,11 +191,9 @@ def update_embed(embed: discord.Embed, guess: str, user: discord.Member) -> disc
 
     if puzzle_id_operation == 1:
         puzzle_id /= puzzle_id_rand_int
-        print(puzzle_id)
         puzzle_id = int(puzzle_id)
     elif puzzle_id_operation == 2:
         puzzle_id -= puzzle_id_rand_int
-        print(puzzle_id)
         puzzle_id = int(puzzle_id)
 
     answer = country_list[puzzle_id]
