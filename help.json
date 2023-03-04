@@ -3,7 +3,8 @@
         "countryle": "A country guessing game, based off https://countryle.com."
     },
     "Stats": {
-        "lb": "Used to display leaderboards for Pygusser's games."
+        "lb": "Used to display leaderboards for Pygusser's games.",
+        "rank": "Used to see individual stats for Pygusser's games."
     },
     "Misc": {
         "stats": "Shows Pygusser's current bot stats.",

@@ -45,7 +45,7 @@ class countryle(commands.Cog):
         user_stats = db_countryle.find_one({"id": ctx.author.id})
         if not ctx.author.bot:
             if user_stats is None:
-                insert = {"id": ctx.author.id, "wins": 0, "games_played": 0}
+                insert = {"id": ctx.author.id, "wins": 0, "games_played": 0, "best_game": 0}
                 db_countryle.insert_one(insert)
 
                 time.sleep(3)
@@ -161,7 +161,7 @@ def generate_guessed_country(guess, answer, puzzle_id):
     if guessed_hemisphere == correct_hemisphere:
         hemisphere_str = f"{guessed_hemisphere} ✅"
     else:
-        continent_str = f"{guessed_continent} ❌"
+        hemisphere_str = f"{guessed_hemisphere} ❌"
 
     if guessed_continent == correct_continent:
         continent_str = f"{guessed_continent} ✅"
@@ -210,6 +210,15 @@ def update_embed(embed: discord.Embed, guess: str, user: discord.Member) -> disc
         user_stats = db_countryle.find_one({'id': user.id})
         wins = user_stats['wins'] + 1
         db_countryle.update_one({"id": user.id}, {"$set":{"wins": wins}})
+
+        best_guess = user_stats['best_guess']
+        if best_guess > 0:
+            if best_guess > num_of_guesses:
+                best_guess = num_of_guesses
+                db_countryle.update_one({"id": user.id}, {"$set":{"best_guess": best_guess}})
+        elif best_guess == 0:
+            best_guess = num_of_guesses
+            db_countryle.update_one({"id": user.id}, {"$set":{"best_guess": best_guess}})
     else:
         embed.add_field(name = f"{guess}:", value = f"{guessed_result}", inline=False)
     return embed
