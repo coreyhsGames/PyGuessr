@@ -10,11 +10,10 @@ PyGuessr is a fun geography Discord Bot written in [discord.py](https://github.c
 PyGuessr is currently in development and isn't finished.
 
 ## To-Do
-- [ ] Database
+- [x] Database
   - [x] Leaderboard
-  - [ ] Personal Rank
   - [x] Read/Write Data
-  - [ ] Lookup Users
+  - [x] Lookup User Stats
 - [ ] Countryle (based off https://countryle.com)
   - [x] Base Game
   - [x] Database
