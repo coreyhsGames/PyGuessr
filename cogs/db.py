@@ -58,11 +58,11 @@ class database(commands.Cog):
         await ctx.reply(embed=embed)
 
     @commands.group(invoke_without_command = True)
-    async def rank(self, ctx):
-        await ctx.reply("In order to see a users rank, please specify the game. Currently there is only 1 avaliable game.**\n\nThe list is below:\n• Countryle: `pyrank countryle [user]`**")
+    async def stats(self, ctx):
+        await ctx.reply("In order to see a users stats, please specify the game. Currently there is only 1 avaliable game.**\n\nThe list is below:\n• Countryle: `pystats countryle [user]`**")
     
-    @rank.command(name = "countryle")
-    async def rank_countryle(self, ctx, user: discord.Member = None):
+    @stats.command(name = "countryle")
+    async def stats_countryle(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.author
 
@@ -81,7 +81,7 @@ class database(commands.Cog):
             temp_best_guess = user_stats["best_guess"]
 
             embed = discord.Embed(title = f"{user.name}'s Countryle Stats", colour = 0xBA55D3)
-            embed.add_field(name = "User", value = user.mention, inline = False)
+            embed.add_field(name = "User:", value = user.mention, inline = False)
             embed.add_field(name = "👑 Wins:", value = f"{temp_wins}", inline = True)
             embed.add_field(name = "🗓️ Games Played:", value = f"{temp_games_played}", inline = True)
             embed.add_field(name = "🔥 Best Game:", value = f"{temp_best_guess}")

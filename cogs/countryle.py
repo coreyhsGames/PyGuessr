@@ -24,7 +24,30 @@ country_data = {
     "Belgium": "Northern, Europe, 11000000, 9.55",
     "Belize": "Northern, North America, 400000, 25.35",
     "Benin": "Northern, Africa, 12000000, 27.55",
-    "Bhutan": "Northern, Asia, 770000, 7.40"
+    "Bhutan": "Northern, Asia, 770000, 7.40",
+    "Bolivia": "Southern, South America, 11600000, 21.55",
+    "Bosnia and Herzegovina": "Northern, Europe, 3200000, 9.85",
+    "Botswana": "Southern, Africa, 2300000, 21.50",
+    "Brazil": "Southern, South America, 212500000, 24.95",
+    "Brunei": "Northern, Asia, 437000, 26.85",
+    "Bulgaria": "Northern, Europe, 6940000, 10.55",
+    "Burkina Faso": "Northern, Africa, 20900000, 28.29",
+    "Burundi": "Southern, Africa, 11800000, 19.80",
+    "Cambodia": "Northern, Asia, 16700000, 26.80",
+    "Cameroon": "Northern, Africa, 26500000, 24.60",
+    "Canada": "Northern, North America, 37700000, -5.10",
+    "Cape Verde": "Northern, Africa, 555000, 23.30",
+    "Central African Republic": "Northern, Africa, 4800000, 24.90",
+    "Chad": "Northern, Africa, 16400000, 26.55",
+    "Chile": "Southern, South America, 19100000, 8.45",
+    "China": "Northern, Asia, 1439000000, 7.50",
+    "Colombia": "Northern, South America, 50880000, 24.50",
+    "Comoros": "Southern, Africa, 869000, 25.30",
+    "Costa Rica": "Northern, North America, 5000000, 24.80",
+    "Croatia": "Northern, Europe, 4100000, 10.90",
+    "Cuba": "Northern, North America, 11300000, 25.20",
+    "Cyprus": "Northern, Europe, 1200000, 18.45",
+    "Czech Republic": "Northern, Europe, 10700000, 7.55"
 }
 
 with open("./config.json") as f:
@@ -45,7 +68,7 @@ class countryle(commands.Cog):
         user_stats = db_countryle.find_one({"id": ctx.author.id})
         if not ctx.author.bot:
             if user_stats is None:
-                insert = {"id": ctx.author.id, "wins": 0, "games_played": 0, "best_game": 0}
+                insert = {"id": ctx.author.id, "wins": 0, "games_played": 0, "best_guess": 0}
                 db_countryle.insert_one(insert)
 
                 time.sleep(3)
@@ -59,7 +82,7 @@ class countryle(commands.Cog):
                 db_countryle.update_one({"id": ctx.author.id}, {"$set":{"games_played": games_played}})
 
         puzzle_id = random_puzzle_id()
-        embed = generate_puzzle_embed(puzzle_id)
+        embed = generate_puzzle_embed(ctx.author, puzzle_id)
         await ctx.reply(embed = embed)
 
     @commands.Cog.listener()
@@ -78,6 +101,10 @@ class countryle(commands.Cog):
         
         embed = parent.embeds[0]
         
+        if embed.author.name != message.author.name or embed.author.icon_url != message.author.display_avatar.url:
+            await message.reply(f"This game was started by {embed.author.name}\nStart a new game with pycountryle.", delete_after = 5)
+            await message.delete(delay = 5)
+            return
         if not is_valid_country(message.content):
             await message.reply("Sorry! This country doesn't exist. 😔", delete_after = 5)
             await message.delete(delay = 5)
@@ -92,11 +119,11 @@ class countryle(commands.Cog):
             pass
 
     
-def generate_puzzle_embed(puzzle_id: int) -> discord.Embed:
+def generate_puzzle_embed(user: discord.Member, puzzle_id: int) -> discord.Embed:
     embed = discord.Embed(title = "Countryle: WAITING FOR USER", colour = 0xBA55D3)
     embed.description = f"**🌐 Hemisphere | <:earth_oceania:1080012117035450408> Continent | 👥 Population | 🌡 Avg. Temp**"
-
     embed.set_footer(text = f"Game ID: {puzzle_id} | To play, use the command pycountryle!\nTo guess, reply to this message with a valid country.")
+    embed.set_author(name=user.name, icon_url=user.display_avatar)
     return embed
 
 def is_valid_country(word: str) -> bool:

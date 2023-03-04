@@ -75,7 +75,7 @@ async def help(ctx):
     sent_message = await ctx.reply(embed = create_help_embed(current_page), view = my_view)
 
 @client.command()
-async def stats(ctx):
+async def bstats(ctx):
     ping_start_time = time.time()
     proc = Process()
     with proc.oneshot():

@@ -4,10 +4,10 @@
     },
     "Stats": {
         "lb": "Used to display leaderboards for Pygusser's games.",
-        "rank": "Used to see individual stats for Pygusser's games."
+        "stats": "Used to see individual stats for Pygusser's games."
     },
     "Misc": {
-        "stats": "Shows Pygusser's current bot stats.",
+        "bstats": "Shows Pygusser's current bot stats.",
         "help": "Shows this command."
     }
 }
