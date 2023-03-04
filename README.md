@@ -19,8 +19,7 @@ PyGuessr is currently in development and isn't finished.
   - [x] Base Game
   - [x] Database
   - [ ] Country Data
-- [ ] Country Shape Guessing
-- [ ] Flag Guessing
+- [ ] Capital City Guessing
 - [ ] Currency
 - [ ] Ranks/Badges (to flex how much of a geography god you are)
 
