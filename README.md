@@ -10,12 +10,19 @@ PyGuessr is a fun geography Discord Bot written in [discord.py](https://github.c
 PyGuessr is currently in development and isn't finished.
 
 ## To-Do
-- [x] Database Functionality
+- [ ] Database
+  - [x] Leaderboard
+  - [ ] Personal Rank
+  - [x] Read/Write Data
+  - [ ] Lookup Users
 - [ ] Countryle (based off https://countryle.com)
+  - [x] Base Game
+  - [x] Database
+  - [ ] Country Data
 - [ ] Country Shape Guessing
 - [ ] Flag Guessing
 - [ ] Currency
-- [ ] Ranks (+ Store)
+- [ ] Ranks/Badges (to flex how much of a geography god you are)
 
 ## Contributing
 More information about contributing is coming after the first initial release.
