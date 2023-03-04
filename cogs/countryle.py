@@ -93,7 +93,7 @@ class countryle(commands.Cog):
 
     
 def generate_puzzle_embed(puzzle_id: int) -> discord.Embed:
-    embed = discord.Embed(title = "Countryle: IN-PROGRESS", colour = 0xBA55D3)
+    embed = discord.Embed(title = "Countryle: WAITING FOR USER", colour = 0xBA55D3)
     embed.description = f"**🌐 Hemisphere | <:earth_oceania:1080012117035450408> Continent | 👥 Population | 🌡 Avg. Temp**"
 
     embed.set_footer(text = f"Game ID: {puzzle_id} | To play, use the command pycountryle!\nTo guess, reply to this message with a valid country.")
@@ -201,9 +201,11 @@ def update_embed(embed: discord.Embed, guess: str, user: discord.Member) -> disc
     
     is_correct = is_guessed_country_correct(guess, answer)
 
-    if is_correct == True:
-        num_of_guesses = len(embed.fields) + 1
+    num_of_guesses = len(embed.fields) + 1
 
+    embed.title = f"Countryle: {6 - num_of_guesses} GUESSES LEFT"
+
+    if is_correct == True:
         embed.add_field(name = f"{guess}:", value = f"{guessed_result}\n\n**Correct! ✅**\n\nStats:\nGuesses: {num_of_guesses}", inline=False)
         embed.title = f"Countryle: COMPLETE"
 
@@ -219,6 +221,9 @@ def update_embed(embed: discord.Embed, guess: str, user: discord.Member) -> disc
         elif best_guess == 0:
             best_guess = num_of_guesses
             db_countryle.update_one({"id": user.id}, {"$set":{"best_guess": best_guess}})
+    elif num_of_guesses >= 6: 
+        embed.add_field(name = f"{guess}:", value = f"{guessed_result}\n\n**GAME OVER! 😟**\n\nAnswer:\n{answer}", inline=False)
+        embed.title = f"Countryle: COMPLETE"
     else:
         embed.add_field(name = f"{guess}:", value = f"{guessed_result}", inline=False)
     return embed
