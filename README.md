@@ -17,7 +17,7 @@ PyGuessr is currently in development and isn't finished.
 - [ ] Countryle (based off https://countryle.com)
   - [x] Base Game
   - [x] Database
-  - [ ] Country Data
+  - [ ] Country Data (42 / 193 countries complete)
 - [ ] Capital City Guessing
 - [ ] Currency
 - [ ] Ranks/Badges (to flex how much of a geography god you are)
