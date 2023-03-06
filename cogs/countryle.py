@@ -47,7 +47,22 @@ country_data = {
     "Croatia": "Northern, Europe, 4100000, 10.90",
     "Cuba": "Northern, North America, 11300000, 25.20",
     "Cyprus": "Northern, Europe, 1200000, 18.45",
-    "Czech Republic": "Northern, Europe, 10700000, 7.55"
+    "Czech Republic": "Northern, Europe, 10700000, 7.55",
+    "Democratic Republic of the Congo": "Southern, Africa, 89500000, 24.00",
+    "Denmark": "Northern, Europe, 5790000, -3.70",
+    "Djibouti": "Northern, Africa, 988000, 28.00",
+    "Dominica": "Northern, North America, 71900, 22.35",
+    "Dominican Republic": "Northern, North America, 10800000, 24.55",
+    "East Timor": "Southern, Asia, 1310000, 25.25",
+    "Ecuador": "Southern, South America, 17640000, 21.85",
+    "Egypt": "Northern, Africa, 102330000, 22.10",
+    "El Salvador": "Northern, North America, 6480000, 24.45",
+    "Equatorial Guinea": "Northern, Africa, 1400000, 24.55",
+    "Eritrea": "Northern, Africa, 3540000, 25.50",
+    "Estonia": "Northern, Europe, 1320000, 2.00",
+    "Eswatini": "Southern, Africa, 1160000, 21.40",
+    "Ethiopia": "Northern, Africa, 114960000, 22.20",
+    "Fiji": "Southern, Oceania, 896000, 24.40"
 }
 
 with open("./config.json") as f:
